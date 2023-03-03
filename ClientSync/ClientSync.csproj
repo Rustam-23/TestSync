@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dotmim.Sync.MySql" Version="0.9.8" />
+      <PackageReference Include="Dotmim.Sync.Web.Client" Version="0.9.8" />
+    </ItemGroup>
+
+</Project>
