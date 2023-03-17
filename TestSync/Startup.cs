@@ -29,15 +29,13 @@ namespace TestSync
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddDistributedMemoryCache();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
 
             var connectionString = Configuration.GetSection("ConnectionStrings")["DefaultConnection"];
-            
             var options = new SyncOptions { };
-            
             var tables = new string[] {"city", "country", "countrylanguage"};
+            var tables2 = new string[] {"region"};
             
             services.AddSyncServer<MySqlSyncProvider>(connectionString, tables, options);
         }
@@ -51,11 +49,9 @@ namespace TestSync
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseSession();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

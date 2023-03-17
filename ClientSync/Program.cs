@@ -19,14 +19,15 @@ namespace ClientSync
 
         private static async Task SynchronizeAsync()
         {
-            // Database script used for this sample : https://github.com/Mimetis/Dotmim.Sync/blob/master/CreateAdventureWorks.sql 
-
             var serverOrchestrator = new WebRemoteOrchestrator("https://localhost:5001/api/sync");
 
             // Second provider is using plain old Sql Server provider, relying on triggers and tracking tables to create the sync environment
             //var clientProvider = new SqlSyncProvider(clientConnectionString);
             var clientProvider = new MySqlSyncProvider(clientConnectionString);
 
+            serverOrchestrator.OnHttpGettingResponse(req => Console.WriteLine("Receiving Server Response. " + req));
+            serverOrchestrator.OnHttpSendingRequest(res => Console.WriteLine("Sending Client Request. " + res));
+            
             var options = new SyncOptions
             {
                 BatchSize = 1000
@@ -40,11 +41,13 @@ namespace ClientSync
                 try
                 {
                     var progress = new SynchronousProgress<ProgressArgs>(args =>
-                        Console.WriteLine($"{args.ProgressPercentage:p}:\t{args.Message}"));
+                        Console.WriteLine($"{args.ProgressPercentage:p}:\t{args.Message} - {args.Source}"));
 
                     // Launch the sync process
-                    var s1 = await agent.SynchronizeAsync(Dotmim.Sync.Enumerations.SyncType.Reinitialize, progress);
+                    var s1 = await agent.SynchronizeAsync(Dotmim.Sync.Enumerations.SyncType.Normal, progress);
+                    
                     // Write results
+                    
                     Console.WriteLine(s1);
                 }
                 catch (Exception ex)
